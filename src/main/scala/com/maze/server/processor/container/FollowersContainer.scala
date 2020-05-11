@@ -13,8 +13,7 @@ object FollowersContainer {
   case class GetFollowers(originalSender: ActorRef) extends FollowersContainerRequest
 
   sealed trait FollowersContainerResponse
-  // TODO - using set
-  case class FollowersList(from: Int, followers: List[Int]) extends FollowersContainerResponse
+  case class FollowersList(from: Int, followers: Set[Int]) extends FollowersContainerResponse
 }
 class FollowersContainer(id: Int) extends Actor {
 
@@ -29,6 +28,6 @@ class FollowersContainer(id: Int) extends Actor {
       followers = followers - followerId
 
     case GetFollowers(originalSender) =>
-      originalSender ! FollowersList(id, followers.toList)
+      originalSender ! FollowersList(id, followers)
   }
 }

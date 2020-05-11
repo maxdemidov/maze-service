@@ -27,28 +27,22 @@ class UserController extends Actor {
   override def receive: Receive = {
 
     case UserFollow(from, to) =>
-      followerContainers.get(to).orElse({
-        var ref = context.actorOf(FollowersContainer.props(to), "fc-"+to)
-        followerContainers = followerContainers + (to -> ref)
-        Some(ref)
-      }).foreach(_ ! Follow(from))
+      followerContainers.get(to).orElse(instantiation(to)).foreach(_ ! Follow(from))
 
     case UserUnfollow(from, to) =>
-      followerContainers.get(to).orElse({
-        var ref = context.actorOf(FollowersContainer.props(to), "fc-"+to)
-        followerContainers = followerContainers + (to -> ref)
-        Some(ref)
-      }).foreach(_ ! Unfollow(from))
+      followerContainers.get(to).orElse(instantiation(to)).foreach(_ ! Unfollow(from))
 
     case UserGetFollowers(from) =>
-      followerContainers.get(from).orElse({
-        var ref = context.actorOf(FollowersContainer.props(from), "fc-"+from)
-        followerContainers = followerContainers + (from -> ref)
-        Some(ref)
-      }).foreach(_ ! GetFollowers(sender()))
+      followerContainers.get(from).orElse(instantiation(from)).foreach(_ ! GetFollowers(sender()))
 
     case UsersProcessClean() =>
       followerContainers.foreach(p => context.stop(p._2))
       followerContainers = empty
+  }
+
+  private def instantiation(id: Int) = {
+    var ref = context.actorOf(FollowersContainer.props(id), "fc-"+id)
+    followerContainers = followerContainers + (id -> ref)
+    Some(ref)
   }
 }

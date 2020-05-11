@@ -18,8 +18,8 @@ object BootMaze extends App {
   lazy val portEventSource: Int = config.getInt("tcp.event-source.port")
   lazy val portUserClients: Int = config.getInt("tcp.user-clients.port")
 
-//  val processorRef = system.actorOf(ChunkProcessor.props)
-  val processorRef = system.actorOf(StreamProcessor.props)
+  val processorRef = system.actorOf(ChunkProcessor.props)
+//  val processorRef = system.actorOf(StreamProcessor.props)
 
   system.actorOf(
     EventSourceServer.props(new InetSocketAddress(host, portEventSource), processorRef)

@@ -22,49 +22,36 @@ class CommandResolver extends Actor {
 
   override def receive: Receive = {
 
-    case ue@UserEvent(clientsIds, e) => e match {
+    case ue@UserEvent(_, Event(line, _, EventTypes.Follow, Some(from), Some(to))) =>
+      followerContainers.get(to).orElse(instantiation(to)).foreach(_ ! Follow(from))
+      sender() ! List(Command(to, line))
 
-      case Event(event, _, EventTypes.Follow, Some(from), Some(to)) =>
-        followerContainers.get(to).orElse({
-          var ref = context.actorOf(FollowersContainer.props(to), "fc-"+to)
-          followerContainers = followerContainers + (to -> ref)
-          Some(ref)
-        }).foreach(_ ! Follow(from))
+    case ue@UserEvent(_, Event(_, _, EventTypes.Unfollow, Some(from), Some(to))) =>
+      followerContainers.get(to).orElse(instantiation(to)).foreach(_ ! Unfollow(from))
+      sender() ! Nil
 
-        sender() ! List(Command(to, event))
+    case ue@UserEvent(activeIds, Event(line, _, EventTypes.Broadcast, _, _)) =>
+      sender() ! activeIds.map(id => Command(id, line))
 
-      case Event(event, _, EventTypes.Unfollow, Some(from), Some(to)) =>
-        followerContainers.get(to).orElse({
-          var ref = context.actorOf(FollowersContainer.props(to), "fc-"+to)
-          followerContainers = followerContainers + (to -> ref)
-          Some(ref)
-        }).foreach(_ ! Unfollow(from))
+    case ue@UserEvent(_, Event(line, _, EventTypes.Private, Some(from), Some(to))) =>
+      sender() ! List(Command(to, line))
 
-        sender() ! Nil
+    case ue@UserEvent(activeIds, Event(line, _, EventTypes.Status, Some(from), _)) =>
+      followerContainers.get(from).orElse(instantiation(from)).foreach(ref =>
+        context.actorOf(UserProcessorGetFollowers.props(ref, sender(), activeIds, line)) ! ProcessGetFollowers
+      )
 
-      case Event(event, _, EventTypes.Broadcast, _, _) =>
-
-        sender() ! clientsIds.map(id => Command(id, event))
-
-      case Event(event, _, EventTypes.Private, Some(from), Some(to)) =>
-
-        sender() ! List(Command(to, event))
-
-      case Event(event, _, EventTypes.Status, Some(from), _) =>
-        followerContainers.get(from).orElse({
-          var ref = context.actorOf(FollowersContainer.props(from), "fc-"+from)
-          followerContainers = followerContainers + (from -> ref)
-          Some(ref)
-        }).foreach(ref =>
-          context.actorOf(UserProcessorGetFollowers.props(ref, sender(), clientsIds, event)) ! ProcessGetFollowers
-        )
-
-      case event =>
-        Future.failed(throw new IllegalArgumentException(s"Unsupported event [$event] to convert to commands."))
-    }
+    case ue@UserEvent(_, event) =>
+      Future.failed(throw new IllegalArgumentException(s"Unsupported event [$event] to convert to commands."))
 
     case UsersProcessClean() =>
       followerContainers.foreach(p => context.stop(p._2))
       followerContainers = empty
+  }
+
+  private def instantiation(id: Int) = {
+    var ref = context.actorOf(FollowersContainer.props(id), "fc-"+id)
+    followerContainers = followerContainers + (id -> ref)
+    Some(ref)
   }
 }

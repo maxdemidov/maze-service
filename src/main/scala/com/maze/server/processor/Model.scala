@@ -14,7 +14,7 @@ object Model {
     val Status = Value("S")
   }
 
-  case class Event(event: ByteString,
+  case class Event(line: ByteString,
                    id: Int,
                    `type`: EventTypes.EventType,
                    fromUserId: Option[Int] = None,

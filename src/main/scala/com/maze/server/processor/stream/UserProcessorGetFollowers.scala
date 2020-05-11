@@ -7,14 +7,14 @@ import com.maze.server.processor.container.FollowersContainer.{FollowersList, Ge
 
 case object UserProcessorGetFollowers {
   def props(userRef: ActorRef,
-            distinationRef: ActorRef,
-            keys: List[Int],
+            distRef: ActorRef,
+            keys: Set[Int],
             event: ByteString) =
-    Props(classOf[UserProcessorGetFollowers], userRef, distinationRef, keys, event)
+    Props(classOf[UserProcessorGetFollowers], userRef, distRef, keys, event)
 }
 class UserProcessorGetFollowers(userRef: ActorRef,
-                                distinationRef: ActorRef,
-                                clientIds: List[Int],
+                                distRef: ActorRef,
+                                activeIds: Set[Int],
                                 event: ByteString) extends Actor {
 
   override def receive: Receive = {
@@ -23,8 +23,8 @@ class UserProcessorGetFollowers(userRef: ActorRef,
       userRef ! GetFollowers(self)
 
     case fl: FollowersList =>
-      val listCommands = fl.followers.intersect(clientIds).map(id => Command(id, event))
-      distinationRef ! listCommands
+      val listCommands = fl.followers.intersect(activeIds).map(id => Command(id, event))
+      distRef ! listCommands
       context.stop(self)
   }
 }
