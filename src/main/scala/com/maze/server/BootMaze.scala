@@ -5,7 +5,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import java.net.InetSocketAddress
 
 import com.maze.server.eventsource.EventSourceServer
-import com.maze.server.processor.chunk.SequenceProcessor
+import com.maze.server.processor.sequence.SequenceProcessor
 import com.maze.server.processor.stream.StreamProcessor
 import com.maze.server.userclients.UserClientsServer
 

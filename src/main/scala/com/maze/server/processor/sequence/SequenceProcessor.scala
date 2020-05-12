@@ -1,4 +1,4 @@
-package com.maze.server.processor.chunk
+package com.maze.server.processor.sequence
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.pattern._
@@ -6,7 +6,7 @@ import akka.util.{ByteString, Timeout}
 import com.maze.server.eventsource.EventSourceHandler.{ProcessClean, ProcessData}
 import com.maze.server.processor.Model.{Event, EventTypes}
 import com.maze.server.processor._
-import com.maze.server.processor.chunk.UserController.{UserFollow, UserGetFollowers, UserUnfollow}
+import com.maze.server.processor.sequence.UserController.{UserFollow, UserGetFollowers, UserUnfollow}
 import com.maze.server.processor.container.FollowersContainer.{FollowersContainerResponse, FollowersList}
 import com.maze.server.userclients.UserClientHandler.{RegisterUser, SendToUser, UnRegisterUser}
 

@@ -1,8 +1,8 @@
-package com.maze.server.processor.chunk
+package com.maze.server.processor.sequence
 
 import akka.actor.{Actor, ActorRef, Props}
 import com.maze.server.processor._
-import com.maze.server.processor.chunk.UserController.{UserFollow, UserGetFollowers, UserUnfollow}
+import com.maze.server.processor.sequence.UserController.{UserFollow, UserGetFollowers, UserUnfollow}
 import com.maze.server.processor.container.FollowersContainer
 import com.maze.server.processor.container.FollowersContainer.{Follow, GetFollowers, Unfollow}
 
