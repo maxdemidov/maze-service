@@ -14,10 +14,10 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContextExecutor, Future, Promise}
 import scala.util.{Failure, Success}
 
-object ChunkProcessor {
-  def props = Props(classOf[ChunkProcessor])
+object SequenceProcessor {
+  def props = Props(classOf[SequenceProcessor])
 }
-class ChunkProcessor extends Actor with ActorLogging with DataParser {
+class SequenceProcessor extends Actor with ActorLogging with DataParser {
 
   implicit val timeout: Timeout = Timeout(3 seconds)
   implicit val ec: ExecutionContextExecutor = context.system.dispatcher

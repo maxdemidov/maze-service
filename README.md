@@ -15,7 +15,7 @@ But for processing chunk I use promise to block it at all, to complete entire it
 It should be a good parallelize decision with Akka Streams to process the entire flow if the order wouldn't be matter.
 
 I have two versions of 'processors' to work under event source:
-The first is ChunkProcessor with Future.sequence and combining results for followers by ask from state aggregator (UserController).
+The first is SequenceProcessor with Future.sequence and combining results for followers by ask from state aggregator (UserController).
 This decision a little bit faster.
 The second is StreamProcessor with flow that lives for processing chunk and with ask stage to states aggregator (CommandResolver).
 I have been searching for more elegance and efficient decision by doing so.. somehow parallelize this flow..
@@ -34,8 +34,8 @@ Requests from connection handlers transform to commands which that processor per
  
 About processors:
 
-* First implementation - ChunkProcessor.
-  ChunkProcessor stores all active connection handlers (as ActorRef) in Map by their Id (as they registered).
+* First implementation - SequenceProcessor.
+  SequenceProcessor stores all active connection handlers (as ActorRef) in Map by their Id (as they registered).
   If some client lost connection it would be unregistered, by appropriate command from those client's handler.
   ProcessData command carries a chunk of events from the event source (as ByteString).
   ProcessClean will have sent to clean state and to stop all inner actors in case the event source closed his connection.
