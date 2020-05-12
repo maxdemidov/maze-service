@@ -10,10 +10,10 @@ import com.maze.server.processor.stream.StreamProcessor.{Command, ProcessGetFoll
 
 import scala.concurrent.Future
 
-object CommandResolver {
-  def props = Props(classOf[CommandResolver])
+object EventResolver {
+  def props = Props(classOf[EventResolver])
 }
-class CommandResolver extends Actor {
+class EventResolver extends Actor {
 
   val log = Logging(context.system, this.getClass)
 

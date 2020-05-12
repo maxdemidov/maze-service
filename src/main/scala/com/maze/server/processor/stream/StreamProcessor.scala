@@ -31,8 +31,8 @@ class StreamProcessor extends Actor with ActorLogging with DataParser {
 
   var userClients: Map[Int, ActorRef] = Map[Int, ActorRef]()
 
-  val commandResolver: ActorRef =
-    context.actorOf(CommandResolver.props, "command-resolver")
+  val eventResolver: ActorRef =
+    context.actorOf(EventResolver.props, "command-resolver")
 
   override def receive: Receive = {
 
@@ -44,7 +44,7 @@ class StreamProcessor extends Actor with ActorLogging with DataParser {
         .map(parseData)
         .flatMapConcat(v => Source(v)
           .map(e => UserEvent(activeIds, e))
-          .ask[List[Command]](1)(commandResolver)
+          .ask[List[Command]](1)(eventResolver)
         )
         .filter(_.nonEmpty)
         .flatMapConcat(v => Source(toCommandRefs(v)))
@@ -73,7 +73,7 @@ class StreamProcessor extends Actor with ActorLogging with DataParser {
       userClients = userClients - userId
 
     case ProcessClean() =>
-      commandResolver ! UsersProcessClean()
+      eventResolver ! UsersProcessClean()
   }
 
   private def toCommandRefs(commands: List[Command]): List[CommandRef] = {

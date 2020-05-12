@@ -28,15 +28,15 @@ Next some more technical description about implementation:
 
 EventSourceServer and UserClientsServer are TCP socket servers (extends abstract SocketServer),
  they start on configurable ports (maze-service.conf).
-Thay also take (and their connection handlers in turn) appropriate processor as ActorRef
+Thay also take (and their connection handlers in turn) appropriate processor as ActorRef.
 Requests from connection handlers transform to commands which that processor performed,
  and can reply with SendToUser to send message for any user's client (through his holder)
  
 About processors:
 
-* First implementation - ChunkProcessor
+* First implementation - ChunkProcessor.
   ChunkProcessor stores all active connection handlers (as ActorRef) in Map by their Id (as they registered).
-  If some client lost connection it would be unregistered, by appropriate command from those client's handler
+  If some client lost connection it would be unregistered, by appropriate command from those client's handler.
   ProcessData command carries a chunk of events from the event source (as ByteString).
   ProcessClean will have sent to clean state and to stop all inner actors in case the event source closed his connection.
   
@@ -54,19 +54,21 @@ About processors:
   For 'F' command  we should only add follower and the event for client is obvious.
   For 'U' we need remove follower and there is no event at all.
   For 'B' we have the event as is, and nothing to modify followers.
-  For 'P' we should only take all active users (they stoder in processor as Map) and build event for each, and nothing with followers .
+  For 'P' we should only take all active users (they stored in processor as Map) and build event for each, and nothing with followers .
   For 'S' we should take set with follower for an appropriate user and leave only that that currently active to form event for them.
   All this operations processed as a list of Future, then I sequense them, 
    flatten as each event from event source can emit a list of events for users.
-  And then I group them by Id to exclude inactive by once and bing with ActorRef through with to send events.
-  I must resolve here entire Future for this butch in order to prevent race condition, so I use Promise, onComplete and Await..
+  And then I group them by Id to exclude inactive by once and bind with ActorRef through which will send events.
+  I must resolve here entire Future for this butch in order to prevent race condition with another butch, 
+   so I use Promise, onComplete and Await.. (which unlike me but..)
 
-* Second implementation - StreamProcessor
+* Second implementation - StreamProcessor.
   Generally the same. And I blocked with Promise the same way..
-  The idea is to use Streams API - flow and ask stage with CommandResolver actor 
-   that decides how to translate event source's event to message, and there are some inner temporary actor GetFollowersTmp.
+  The idea is to use Streams API - flow and ask stage with EventResolver, 
+   actor that decides how to translate event source's event to message (user events), 
+   and there are some inner temporary actor GetFollowersTmp.
   Storing followers in the same way.
-  I send active users Ids at once to intersect with followers and exclude inactive directly on each event, 
-   not at the and as in the first implementation.
+  I send active users Ids with each Event to EventResolver to intersect with followers 
+   and exclude inactive directly on each event at once, not at the and as in the first implementation.
 
 
