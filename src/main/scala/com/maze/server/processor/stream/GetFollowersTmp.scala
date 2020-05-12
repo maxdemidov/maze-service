@@ -5,17 +5,17 @@ import akka.util.ByteString
 import com.maze.server.processor.stream.StreamProcessor.{Command, ProcessGetFollowers}
 import com.maze.server.processor.container.FollowersContainer.{FollowersList, GetFollowers}
 
-case object UserProcessorGetFollowers {
+case object GetFollowersTmp {
   def props(userRef: ActorRef,
             distRef: ActorRef,
             keys: Set[Int],
             event: ByteString) =
-    Props(classOf[UserProcessorGetFollowers], userRef, distRef, keys, event)
+    Props(classOf[GetFollowersTmp], userRef, distRef, keys, event)
 }
-class UserProcessorGetFollowers(userRef: ActorRef,
-                                distRef: ActorRef,
-                                activeIds: Set[Int],
-                                event: ByteString) extends Actor {
+class GetFollowersTmp(userRef: ActorRef,
+                      distRef: ActorRef,
+                      activeIds: Set[Int],
+                      event: ByteString) extends Actor {
 
   override def receive: Receive = {
 
@@ -23,8 +23,7 @@ class UserProcessorGetFollowers(userRef: ActorRef,
       userRef ! GetFollowers(self)
 
     case fl: FollowersList =>
-      val listCommands = fl.followers.intersect(activeIds).map(id => Command(id, event))
-      distRef ! listCommands
+      distRef ! activeIds.intersect(fl.followers).toList.map(id => Command(id, event))
       context.stop(self)
   }
 }

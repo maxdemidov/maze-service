@@ -31,14 +31,14 @@ class CommandResolver extends Actor {
       sender() ! Nil
 
     case ue@UserEvent(activeIds, Event(line, _, EventTypes.Broadcast, _, _)) =>
-      sender() ! activeIds.map(id => Command(id, line))
+      sender() ! activeIds.toList.map(id => Command(id, line))
 
     case ue@UserEvent(_, Event(line, _, EventTypes.Private, Some(from), Some(to))) =>
       sender() ! List(Command(to, line))
 
     case ue@UserEvent(activeIds, Event(line, _, EventTypes.Status, Some(from), _)) =>
       followerContainers.get(from).orElse(instantiation(from)).foreach(ref =>
-        context.actorOf(UserProcessorGetFollowers.props(ref, sender(), activeIds, line)) ! ProcessGetFollowers
+        context.actorOf(GetFollowersTmp.props(ref, sender(), activeIds, line)) ! ProcessGetFollowers
       )
 
     case ue@UserEvent(_, event) =>
