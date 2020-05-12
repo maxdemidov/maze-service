@@ -21,15 +21,16 @@ class UserClientHandler(processor: ActorRef) extends Actor {
   import Tcp._
 
   def init: Receive = {
-
     case Received(data) =>
       userId = Some(Integer.parseInt(data.utf8String.trim))
       userId.foreach(id =>
         processor ! RegisterUser(id, self)
       )
       origin = sender()
-      context.become(process orElse init)
+      context.become(process orElse close)
+  }
 
+  def close: Receive = {
     case PeerClosed =>
       userId.foreach(id =>
         processor ! UnRegisterUser(id)
@@ -38,10 +39,9 @@ class UserClientHandler(processor: ActorRef) extends Actor {
   }
 
   def process: Receive = {
-
     case SendToUser(data) =>
       origin ! Write(data)
   }
 
-  override def receive: Receive = init
+  override def receive: Receive = init orElse close
 }
