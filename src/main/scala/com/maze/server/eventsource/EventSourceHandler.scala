@@ -1,7 +1,6 @@
 package com.maze.server.eventsource
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
 import akka.io.Tcp
 import akka.util.ByteString
 import com.maze.server.eventsource.EventSourceHandler.{ProcessClean, ProcessData}
@@ -14,8 +13,6 @@ object EventSourceHandler {
   case class ProcessClean() extends EventSourceHandlerCommand
 }
 class EventSourceHandler(processor: ActorRef) extends Actor {
-
-  val log = Logging(context.system, this.getClass)
 
   import Tcp._
 

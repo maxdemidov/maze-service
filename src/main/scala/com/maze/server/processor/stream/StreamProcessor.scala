@@ -1,7 +1,6 @@
 package com.maze.server.processor.stream
 
-import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Source}
 import akka.util.{ByteString, Timeout}
@@ -24,9 +23,7 @@ object StreamProcessor {
   case class Command(id: Int, data: ByteString)
   case class CommandRef(ref: ActorRef, data: ByteString)
 }
-class StreamProcessor extends Actor with DataParser {
-
-  val log = Logging(context.system, this.getClass)
+class StreamProcessor extends Actor with ActorLogging with DataParser {
 
   implicit val timeout: Timeout = Timeout(3 seconds)
   implicit val ec: ExecutionContextExecutor = context.system.dispatcher

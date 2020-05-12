@@ -1,7 +1,6 @@
 package com.maze.server.processor.chunk
 
-import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.pattern._
 import akka.util.{ByteString, Timeout}
 import com.maze.server.eventsource.EventSourceHandler.{ProcessClean, ProcessData}
@@ -18,9 +17,7 @@ import scala.util.{Failure, Success}
 object ChunkProcessor {
   def props = Props(classOf[ChunkProcessor])
 }
-class ChunkProcessor extends Actor with DataParser {
-
-  val log = Logging(context.system, this.getClass)
+class ChunkProcessor extends Actor with ActorLogging with DataParser {
 
   implicit val timeout: Timeout = Timeout(3 seconds)
   implicit val ec: ExecutionContextExecutor = context.system.dispatcher

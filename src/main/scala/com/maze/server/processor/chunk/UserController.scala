@@ -1,7 +1,6 @@
 package com.maze.server.processor.chunk
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
 import com.maze.server.processor._
 import com.maze.server.processor.chunk.UserController.{UserFollow, UserGetFollowers, UserUnfollow}
 import com.maze.server.processor.container.FollowersContainer
@@ -18,8 +17,6 @@ object UserController {
   case class UserGetFollowers(from: Int) extends UserControllerCommand
 }
 class UserController extends Actor {
-
-  val log = Logging(context.system, this.getClass)
 
   val empty: Map[Int, ActorRef] = Map[Int, ActorRef]()
   var followerContainers: Map[Int, ActorRef] = empty

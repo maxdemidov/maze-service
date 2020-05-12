@@ -2,13 +2,10 @@ package com.maze.server.socket
 
 import java.net.InetSocketAddress
 
-import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.io.{IO, Tcp}
 
-abstract class SocketServer(socket: InetSocketAddress, processor: ActorRef) extends Actor {
-
-  val log = Logging(context.system, this.getClass)
+abstract class SocketServer(socket: InetSocketAddress, processor: ActorRef) extends Actor with ActorLogging {
 
   import Tcp._
   import context.system

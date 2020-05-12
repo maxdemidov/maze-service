@@ -6,7 +6,6 @@ import com.maze.server.processor.container.FollowersContainer._
 object FollowersContainer {
   def props(id : Int) = Props(classOf[FollowersContainer], id)
 
-
   sealed trait FollowersContainerRequest
   case class Follow(id: Int) extends FollowersContainerRequest
   case class Unfollow(id: Int) extends FollowersContainerRequest

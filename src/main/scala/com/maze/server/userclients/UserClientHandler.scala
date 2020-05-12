@@ -1,7 +1,6 @@
 package com.maze.server.userclients
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
 import akka.io.Tcp
 import akka.util.ByteString
 import com.maze.server.userclients.UserClientHandler.{RegisterUser, SendToUser, UnRegisterUser}
@@ -15,8 +14,6 @@ object UserClientHandler {
   case class SendToUser(data: ByteString) extends UserClientHandlerCommand
 }
 class UserClientHandler(processor: ActorRef) extends Actor {
-
-  val log = Logging(context.system, this.getClass)
 
   var userId: Option[Integer] = None
   var origin: ActorRef = _
