@@ -2,6 +2,22 @@
 
 Some description of implementation:
 
+The previous description replaced with this new as I have found new more elegant decision today (tonight).
+The previous implementations marked as deprecated, all relevant code is in com.maze.server.processor package itself - 
+ three sub-packages under it is old versions with ugly Await.
+The idea is to save followers state vise versa, 
+ in those actor that will check is particular 'S' message should be processed to the client or omitted.
+For 'F' and 'U' events I notify both actors 'to' and 'from' as one should send event and other save state.
+For each 'S' event I tell each active actors to consider that 'S' event (like 'B'), 
+ and they send it depending on its state (its followed on), so there is nothing to violate ordering now 
+ (to check followers we shouldn't use Future and blocked for result), and no raise conditions.
+There are overhead with sending 'S' among all active actors - but it's the price.
+The decision much plainer and needn't extraordinary description as there are only two pieces of code with logic 
+ (EventProcessor and UserController actors).
+I left the previous description underneath.. as it was
+
+---
+
 First of all
 To respect user's events order, I can't see any efficient decision,
  because we should be blocked on each chunk (actually even worse) before taking next,

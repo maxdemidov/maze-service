@@ -15,6 +15,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContextExecutor, Promise}
 import scala.util.{Failure, Success}
 
+@deprecated
 object StreamProcessor {
   def props = Props(classOf[StreamProcessor])
 
@@ -23,6 +24,7 @@ object StreamProcessor {
   case class Command(id: Int, data: ByteString)
   case class CommandRef(ref: ActorRef, data: ByteString)
 }
+@deprecated
 class StreamProcessor extends Actor with ActorLogging with DataParser {
 
   implicit val timeout: Timeout = Timeout(3 seconds)

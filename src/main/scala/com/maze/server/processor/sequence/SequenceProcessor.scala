@@ -14,9 +14,11 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContextExecutor, Future, Promise}
 import scala.util.{Failure, Success}
 
+@deprecated
 object SequenceProcessor {
   def props = Props(classOf[SequenceProcessor])
 }
+@deprecated
 class SequenceProcessor extends Actor with ActorLogging with DataParser {
 
   implicit val timeout: Timeout = Timeout(3 seconds)
