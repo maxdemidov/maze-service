@@ -14,7 +14,7 @@ object UserController {
 }
 class UserController(userId: Int) extends Actor {
 
-  var followedOn: Set[Int] = Set[Int]()
+  var followedOn: Set[Int] = Set.empty
   var clientRef: Option[ActorRef] = None
 
   override def receive: Receive = {

@@ -11,7 +11,8 @@ object EventProcessor {
 }
 class EventProcessor extends Actor with DataParser with ActorLogging {
 
-  val empty: Map[Int, ActorRef] = Map[Int, ActorRef]()
+  val empty: Map[Int, ActorRef] = Map.empty
+
   var activeUsers: Map[Int, ActorRef] = empty
   var passiveUsers: Map[Int, ActorRef] = empty
 
