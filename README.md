@@ -14,6 +14,7 @@ For each 'S' event I tell each active actors to consider that 'S' event (like 'B
 There are overhead with sending 'S' among all active actors - but it's the price.
 The decision much plainer and needn't extraordinary description as there are only two pieces of code with logic 
  (EventProcessor and UserController actors).
+What about performance, seems it's a little bit faster too.
 I left the previous description underneath.. as it was
 
 ---
