@@ -19,7 +19,7 @@ trait DataParser {
         case sid :: "P" :: sf :: st :: Nil => Event(line, sid, EventTypes.Private, sf, st)
         case sid :: "S" :: sf :: Nil       => Event(line, sid, EventTypes.Status, sf, None)
         case _ =>
-          throw new IllegalArgumentException(s"Unsupported data [$data] to convert to event.")
+          throw new IllegalArgumentException(s"Unsupported data [${data.utf8String}] to convert to event.")
       })
       .sortBy(_.id).toList
   }

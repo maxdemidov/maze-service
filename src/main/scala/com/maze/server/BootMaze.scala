@@ -5,8 +5,9 @@ import com.typesafe.config.{Config, ConfigFactory}
 import java.net.InetSocketAddress
 
 import com.maze.server.eventsource.EventSourceServer
-import com.maze.server.processor.sequence.SequenceProcessor
-import com.maze.server.processor.stream.StreamProcessor
+import com.maze.server.processor.EventProcessor
+//import com.maze.server.processor.sequence.SequenceProcessor
+//import com.maze.server.processor.stream.StreamProcessor
 import com.maze.server.userclients.UserClientsServer
 
 object BootMaze extends App {
@@ -18,7 +19,8 @@ object BootMaze extends App {
   lazy val portEventSource: Int = config.getInt("tcp.event-source.port")
   lazy val portUserClients: Int = config.getInt("tcp.user-clients.port")
 
-  val processorRef = system.actorOf(SequenceProcessor.props)
+  val processorRef = system.actorOf(EventProcessor.props)
+//  val processorRef = system.actorOf(SequenceProcessor.props)
 //  val processorRef = system.actorOf(StreamProcessor.props)
 
   system.actorOf(
