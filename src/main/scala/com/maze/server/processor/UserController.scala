@@ -1,6 +1,6 @@
 package com.maze.server.processor
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import com.maze.server.processor.Model.{Event, EventTypes}
 import com.maze.server.processor.UserController.{RegisterHandler, UnRegisterHandler}
 import com.maze.server.userclients.UserClientHandler.SendToUser
