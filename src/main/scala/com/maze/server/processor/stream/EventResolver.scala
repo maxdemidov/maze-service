@@ -3,15 +3,18 @@ package com.maze.server.processor.stream
 import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
 import com.maze.server.processor.Model.{Event, EventTypes}
-import com.maze.server.processor._
 import com.maze.server.processor.container.FollowersContainer
 import com.maze.server.processor.container.FollowersContainer.{Follow, Unfollow}
+import com.maze.server.processor.stream.EventResolver.UsersProcessClean
 import com.maze.server.processor.stream.StreamProcessor.{Command, ProcessGetFollowers, UserEvent}
 
 import scala.concurrent.Future
 
 object EventResolver {
   def props = Props(classOf[EventResolver])
+
+  sealed trait EventResolverCommand
+  case object UsersProcessClean extends EventResolverCommand
 }
 class EventResolver extends Actor {
 
@@ -44,7 +47,7 @@ class EventResolver extends Actor {
     case ue@UserEvent(_, event) =>
       Future.failed(throw new IllegalArgumentException(s"Unsupported event [$event] to convert to commands."))
 
-    case UsersProcessClean() =>
+    case UsersProcessClean =>
       followerContainers.foreach(p => context.stop(p._2))
       followerContainers = empty
   }

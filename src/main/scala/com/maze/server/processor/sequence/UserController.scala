@@ -1,8 +1,7 @@
 package com.maze.server.processor.sequence
 
 import akka.actor.{Actor, ActorRef, Props}
-import com.maze.server.processor._
-import com.maze.server.processor.sequence.UserController.{UserFollow, UserGetFollowers, UserUnfollow}
+import com.maze.server.processor.sequence.UserController.{UserFollow, UserGetFollowers, UserUnfollow, UsersProcessClean}
 import com.maze.server.processor.container.FollowersContainer
 import com.maze.server.processor.container.FollowersContainer.{Follow, GetFollowers, Unfollow}
 
@@ -10,11 +9,10 @@ object UserController {
   def props = Props(classOf[UserController])
 
   sealed trait UserControllerCommand
-
   case class UserFollow(from: Int, to: Int) extends UserControllerCommand
   case class UserUnfollow(from: Int, to: Int) extends UserControllerCommand
-
   case class UserGetFollowers(from: Int) extends UserControllerCommand
+  case object UsersProcessClean extends UserControllerCommand
 }
 class UserController extends Actor {
 
@@ -32,7 +30,7 @@ class UserController extends Actor {
     case UserGetFollowers(from) =>
       followerContainers.get(from).orElse(instantiation(from)).foreach(_ ! GetFollowers(sender()))
 
-    case UsersProcessClean() =>
+    case UsersProcessClean =>
       followerContainers.foreach(p => context.stop(p._2))
       followerContainers = empty
   }

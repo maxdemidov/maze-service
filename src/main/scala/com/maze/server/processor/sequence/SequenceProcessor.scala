@@ -6,7 +6,7 @@ import akka.util.{ByteString, Timeout}
 import com.maze.server.eventsource.EventSourceHandler.{ProcessClean, ProcessData}
 import com.maze.server.processor.Model.{Event, EventTypes}
 import com.maze.server.processor._
-import com.maze.server.processor.sequence.UserController.{UserFollow, UserGetFollowers, UserUnfollow}
+import com.maze.server.processor.sequence.UserController.{UserFollow, UserGetFollowers, UserUnfollow, UsersProcessClean}
 import com.maze.server.processor.container.FollowersContainer.{FollowersContainerResponse, FollowersList}
 import com.maze.server.userclients.UserClientHandler.{RegisterUser, SendToUser, UnRegisterUser}
 
@@ -50,7 +50,7 @@ class SequenceProcessor extends Actor with ActorLogging with DataParser {
       userClients = userClients - userId
 
     case ProcessClean() =>
-      userController ! UsersProcessClean()
+      userController ! UsersProcessClean
   }
 
   private def resolveDestinations(event: Event): Future[List[(Int, ByteString)]] = event match {

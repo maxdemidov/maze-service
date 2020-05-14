@@ -8,6 +8,7 @@ import akka.{Done, NotUsed}
 import com.maze.server.eventsource.EventSourceHandler.{ProcessClean, ProcessData}
 import com.maze.server.processor.Model.Event
 import com.maze.server.processor._
+import com.maze.server.processor.stream.EventResolver.UsersProcessClean
 import com.maze.server.processor.stream.StreamProcessor.{Command, CommandRef, UserEvent}
 import com.maze.server.userclients.UserClientHandler.{RegisterUser, SendToUser, UnRegisterUser}
 
@@ -75,7 +76,7 @@ class StreamProcessor extends Actor with ActorLogging with DataParser {
       userClients = userClients - userId
 
     case ProcessClean() =>
-      eventResolver ! UsersProcessClean()
+      eventResolver ! UsersProcessClean
   }
 
   private def toCommandRefs(commands: List[Command]): List[CommandRef] = {
